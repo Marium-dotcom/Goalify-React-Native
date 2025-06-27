@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
-import { Stack } from 'expo-router'
+import { router, Stack } from 'expo-router'
+import { useAuth } from '@/lib/auth-context'
 
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState<boolean>(false)
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
-
+  const {signIn , signUp, user} =  useAuth()
+  
   const handleError = (message: string) => {
     setError(message)
     setTimeout(() => setError(null), 3000)
@@ -18,6 +20,35 @@ export default function Auth() {
       handleError('Email and password are required.')
       return
     }
+
+    if (password.length < 6) {
+      handleError('Password must be at least 6 characters long.')
+      return
+    }
+    try {
+      if (isSignUp) {
+        await signUp(email, password)
+      } else {
+        await signIn(email, password)
+        router.push('/') // Nav
+        // igate to the home screen after successful sign-in
+
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        handleError(error.message)
+      } else {
+        handleError('An unexpected error occurred.')
+      }
+      return
+    }
+    // Clear input fields on success
+    setEmail('')
+    setPassword('')
+    setError(null)
+
+
+    
     // Handle sign-in/sign-up logic here
   }
 
