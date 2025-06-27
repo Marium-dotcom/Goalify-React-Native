@@ -1,52 +1,56 @@
-# Welcome to your Expo app 👋
+# 🚀 Your Project Name
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile app built with **NativeWind**, **Appwrite**, and **React Native**, featuring full **authentication & authorization**.
 
-## Get started
+---
 
-1. Install dependencies
+## 📖 Table of Contents
 
-   ```bash
-   npm install
-   ```
+1. [About](#about)  
+2. [Features](#features)  
+3. [Tech Stack](#tech-stack)  
+4. [Prerequisites](#prerequisites)  
+5. [Installation](#installation)  
+6. [Configuration](#configuration)  
+7. [Running the App](#running-the-app)  
+8. [Authentication & Authorization](#authentication--authorization)  
+9. [Folder Structure](#folder-structure)  
+10. [Contributing](#contributing)  
+11. [License](#license)  
+12. [Contact](#contact)  
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 🧐 About
 
-In the output, you'll find options to open the app in a
+This project is a cross-platform React Native application styled with **NativeWind** and backed by **Appwrite** for your backend needs. It demonstrates a complete login/signup flow, protected routes/screens, and role-based authorization.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## ✨ Features
 
-## Get a fresh project
+- 🔐 Email & password authentication (signup, login, logout)  
+- 🎟️ Protected screens/routes (only authenticated users can access)  
+- 👥 Role-based authorization (e.g. “user” vs. “admin” roles)  
+- 📱 Responsive UI powered by NativeWind (Tailwind-style in React Native)  
+- ☁️ Appwrite integration for database, storage, functions, and user management  
+- ⚡ Fast development with Expo (optional)  
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
-```
+## 🛠️ Tech Stack
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- **Frontend**  
+  - [React Native](https://reactnative.dev/)  
+  - [NativeWind](https://www.nativewind.dev/) (Tailwind-style styling)  
+  - [Expo](https://expo.dev/) or plain React Native CLI  
 
-## Learn more
+- **Backend / BaaS**  
+  - [Appwrite](https://appwrite.io/) – authentication, database, storage, functions  
 
-To learn more about developing your project with Expo, look at the following resources:
+- **State Management / Navigation**  
+  - React Context / Hooks  
+  - [React Navigation](https://reactnavigation.org/)  
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-# ReactNativeDummyApp
-# habbitTracker

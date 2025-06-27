@@ -1,10 +1,11 @@
-// app/_layout.tsx
-import './globals.css'
+// app/(tabs)/_layout.tsx
+import '../globals.css'
 import { Tabs } from 'expo-router'
 import { SafeAreaProvider  } from 'react-native-safe-area-context'
 import { StatusBar } from 'react-native'
+import { hide } from 'expo-splash-screen'
 
-export default function Layout() {
+export default function TabsLayout() {
   return (
     <SafeAreaProvider>
               <StatusBar
@@ -15,21 +16,14 @@ export default function Layout() {
 
          <Tabs
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         tabBarActiveTintColor: '#2f95dc',
+        tabBarStyle: { backgroundColor: '#222831' }, // dark background
       }}
     >
       <Tabs.Screen
         name="index"
         options={{ title: 'Home' }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{ title: 'Profile' }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{ title: 'Settings' }}
       />
     </Tabs></SafeAreaProvider>
    
