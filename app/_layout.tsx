@@ -1,3 +1,4 @@
+import './globals.css'
 import { AuthProvider, useAuth } from '@/lib/auth-context';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import React, { useEffect } from 'react';
@@ -19,10 +20,7 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
     }
 
       }, [segments, user, isLoading, router]);
-        if (!isReady) {
-    return null; // ممكن ترجع loading spinner هنا كمان
-  }
-
+  
   return <>{children}</>;
 }
 
