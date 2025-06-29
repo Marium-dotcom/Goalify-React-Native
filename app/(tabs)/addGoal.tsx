@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, Modal, KeyboardAvoidingView, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Target, Calendar, Clock, Flag, Heart, DollarSign, BookOpen, Briefcase, Users, Zap, Star, CircleCheck as CheckCircle, X, Sparkles } from 'lucide-react-native';
-import clsx from 'clsx';
 import { useAuth } from '@/lib/auth-context';
 import { Databases, ID } from 'react-native-appwrite';
+import { databases } from '@/lib/appwrite';
 
 interface Category {
   id: string;
@@ -39,7 +39,7 @@ export default function AddGoalScreen() {
   const [reward, setReward] = useState<string>('');
   const [motivationalQuote, setMotivationalQuote] = useState<string>('');
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
-
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const {user} = useAuth(); 
 
   const categories: Category[] = [
@@ -65,23 +65,52 @@ export default function AddGoalScreen() {
   ];
 
   const handleAddGoal = (): void => {
+        if (!user) {
+      return;
+    }
     if (goalTitle.trim() && selectedCategory) {
-      setShowSuccess(true);
+      handleSubmit();
       setTimeout(() => {
         setShowSuccess(false);
         // Reset form
-        setGoalTitle('');
-        setGoalDescription('');
-        setSelectedCategory('');
-        setTargetValue('');
-        setReward('');
+        // setGoalTitle('');
+        // setGoalDescription('');
+        // setSelectedCategory('');
+        // setTargetValue('');
+        // setReward('');
         setMotivationalQuote('');
       }, 2500);
     }
   };
 
+  const handleSubmit = async () => {
 
+ 
+    try {
+      await databases.createDocument(
+        '6860a0d100098a25345c',      // database ID
+        '6860a0f0002e2a54c8f1',      // collection ID (Goals)
+        ID.unique(),                // document ID
+        {
+          title: goalTitle,
+          description: goalDescription,
+          category: selectedCategory,
+          frequency: selectedFrequency,
+          priority: selectedPriority,
+          targetValue,
+          reward,
+          motivationalQuote,
+          userId: user?.$id,
+          createdAt: new Date().toISOString(),
+        }
+      );
+      setShowSuccess(true);
 
+    } catch (error: any) {
+      console.error('Failed to save goal:', error);
+      setErrorMessage(error.message || 'An unexpected error occurred while saving the goal.');
+    }
+  };
 
   return (
     <KeyboardAvoidingView 
@@ -107,6 +136,13 @@ export default function AddGoalScreen() {
       </LinearGradient>
 
       <ScrollView className="flex-1 px-5 pt-6" showsVerticalScrollIndicator={false}>
+        {/* Error Message */}
+        {errorMessage && (
+          <View className="bg-red-500/20 border border-red-500 rounded-xl px-4 py-3 mb-4">
+            <Text className="text-red-400 text-base font-inter text-center">{errorMessage}</Text>
+          </View>
+        )}
+
         {/* Goal Title */}
         <View className="mb-6">
           <Text className="text-white text-lg font-inter-semibold mb-3">Goal Title *</Text>
