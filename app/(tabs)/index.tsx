@@ -22,6 +22,8 @@ import {
 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 const DB_ID = '6860a0d100098a25345c';
 const COLLECTION_ID = '6860a0f0002e2a54c8f1';
@@ -44,10 +46,13 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
+useFocusEffect(
+  useCallback(() => {
     if (!user) return;
-    (async () => {
+
+    const fetchGoals = async () => {
       try {
+        setLoading(true);
         const res = await databases.listDocuments(DB_ID, COLLECTION_ID);
         const mapped: Goal[] = (res.documents as any[]).map((d) => ({
           $id: d.$id,
@@ -65,8 +70,11 @@ export default function HomeScreen() {
       } finally {
         setLoading(false);
       }
-    })();
-  }, [user]);
+    };
+
+    fetchGoals();
+  }, [user])
+);
 
   const categoryMeta: Record<string, { icon: React.FC<any>; color: string }> = {
     health: { icon: Heart, color: '#10B981' },
