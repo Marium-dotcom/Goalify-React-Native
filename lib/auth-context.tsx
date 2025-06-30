@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   };
 const forgotPassword = async (email: string) => {
-  await account.createRecovery(email, 'http://t0ronko-anonymous-8081.exp.direct/reset-password');
+  await account.createRecovery(email, 'http://localhost:8081/reset-password');
 };
 
   return (

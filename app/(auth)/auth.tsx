@@ -6,6 +6,8 @@ import { useAuth } from '@/lib/auth-context'
 export default function Auth() {
   const [isSignUp, setIsSignUp] = useState<boolean>(false)
   const [email, setEmail] = useState<string>('')
+  const [firstName, setFirstName] = useState<string>('')
+  const [lastName, setLastName] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
   const {signIn , signUp, user} =  useAuth()
@@ -68,6 +70,24 @@ export default function Auth() {
           onChangeText={setEmail}
           autoCapitalize='none'
         />
+        {isSignUp && (
+          <>
+            <TextInput
+              className='bg-gray-800 text-white px-4 py-2 rounded mb-4 w-64'
+              placeholder='First Name'
+              placeholderTextColor='#aaa'
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+            <TextInput
+              className='bg-gray-800 text-white px-4 py-2 rounded mb-4 w-64'
+              placeholder='Last Name'
+              placeholderTextColor='#aaa'
+              value={lastName}
+              onChangeText={setLastName}
+            />
+          </>
+        )}
         <TextInput
           className='bg-gray-800 text-white px-4 py-2 rounded mb-4 w-64'
           placeholder='Password'

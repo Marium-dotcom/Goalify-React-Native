@@ -23,6 +23,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
+import { Query } from 'react-native-appwrite';
 
 const DB_ID = '6860a0d100098a25345c';
 const COLLECTION_ID = '6860a0f0002e2a54c8f1';
@@ -44,6 +45,7 @@ export default function HomeScreen() {
   const [goals, setGoals] = useState<Goal[] | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  
 
 useFocusEffect(
   useCallback(() => {
@@ -52,7 +54,9 @@ useFocusEffect(
     const fetchGoals = async () => {
       try {
         setLoading(true);
-        const res = await databases.listDocuments(DB_ID, COLLECTION_ID);
+        const res = await databases.listDocuments(DB_ID, COLLECTION_ID, [
+          Query.equal("userId", user.$id)
+        ]);
         const mapped: Goal[] = (res.documents as any[]).map((d) => ({
           $id: d.$id,
           title: d.title,
