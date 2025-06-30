@@ -5,6 +5,7 @@ import { Target, Calendar, Clock, Flag, Heart, DollarSign, BookOpen, Briefcase, 
 import { useAuth } from '@/lib/auth-context';
 import { Databases, ID } from 'react-native-appwrite';
 import { databases } from '@/lib/appwrite';
+import { router } from 'expo-router';
 
 interface Category {
   id: string;
@@ -35,7 +36,10 @@ export default function AddGoalScreen() {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedFrequency, setSelectedFrequency] = useState<string>('daily');
   const [selectedPriority, setSelectedPriority] = useState<string>('medium');
-  const [targetValue, setTargetValue] = useState<string>('');
+  const [targetValue, setTargetValue] = useState<number>(0);
+  const [unit, setUnit] = useState<string>('');
+  const [customUnit, setCustomUnit] = useState<string>('');
+
   const [reward, setReward] = useState<string>('');
   const [motivationalQuote, setMotivationalQuote] = useState<string>('');
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
@@ -98,6 +102,8 @@ export default function AddGoalScreen() {
           frequency: selectedFrequency,
           priority: selectedPriority,
           targetValue,
+          customUnit,
+          unit ,
           reward,
           motivationalQuote,
           userId: user?.$id,
@@ -105,6 +111,7 @@ export default function AddGoalScreen() {
         }
       );
       setShowSuccess(true);
+      router.push('/'); // Navigate to home after successful goal creation
 
     } catch (error: any) {
       console.error('Failed to save goal:', error);
@@ -260,17 +267,53 @@ export default function AddGoalScreen() {
           </View>
         </View>
 
-        {/* Target Value */}
-        <View className="mb-6">
-          <Text className="text-white text-lg font-inter-semibold mb-3">Target/Measurement</Text>
-          <TextInput
-            className="bg-dark-800 border border-dark-700 rounded-xl px-4 py-4 text-white text-base font-inter"
-            value={targetValue}
-            onChangeText={setTargetValue}
-            placeholder="e.g., 10,000 steps, $500, 30 minutes"
-            placeholderTextColor="#64748B"
-          />
-        </View>
+{/* Target Value */}
+<View className="mb-6">
+  <Text className="text-white text-lg font-inter-semibold mb-3">Target Value</Text>
+  <TextInput
+    className="bg-dark-800 border border-dark-700 rounded-xl px-4 py-4 text-white text-base font-inter mb-3"
+    value={targetValue ? String(targetValue) : ''}
+    onChangeText={text => setTargetValue(Number(text))}
+    keyboardType="numeric"
+    placeholder="Enter the number e.g. 10000"
+    placeholderTextColor="#64748B"
+  />
+
+  <Text className="text-white text-lg font-inter-semibold mb-3">Unit</Text>
+  <View className="bg-dark-800 border border-dark-700 rounded-xl mb-3">
+    {['steps', 'USD', 'minutes', 'km', 'sessions', 'custom'].map((unitOption) => (
+      <TouchableOpacity
+        key={unitOption}
+        className={`px-4 py-3 ${
+          unit === unitOption ? 'bg-indigo-500/20 border-l-4 border-indigo-500' : ''
+        }`}
+        onPress={() => {
+          setUnit(unitOption);
+          if (unitOption !== 'custom') setCustomUnit('');
+        }}
+      >
+        <Text
+          className={`text-base font-inter ${
+            unit === unitOption ? 'text-indigo-400' : 'text-gray-400'
+          }`}
+        >
+          {unitOption === 'custom' ? 'Custom Unit' : unitOption}
+        </Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+
+  {unit === 'custom' && (
+    <TextInput
+      className="bg-dark-800 border border-dark-700 rounded-xl px-4 py-4 text-white text-base font-inter"
+      value={customUnit}
+      onChangeText={setCustomUnit}
+      placeholder="Enter your custom unit (e.g. pages, reps)"
+      placeholderTextColor="#64748B"
+    />
+  )}
+</View>
+
 
         {/* Reward */}
         <View className="mb-6">
