@@ -9,7 +9,6 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
   const {user, isLoading} = useAuth();
   const router = useRouter();
   const segments = useSegments();
-  const isReady = segments.length > 0; // مهم جداً
 
   useEffect(() => {      
 const isAuthRoute = segments[0] === '(auth)'

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Modal, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Modal, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Target, Calendar, Clock, Flag, Heart, DollarSign, BookOpen, Briefcase, Users, Zap, Star, CircleCheck as CheckCircle, X, Sparkles } from 'lucide-react-native';
 import { useAuth } from '@/lib/auth-context';
 import { Databases, ID } from 'react-native-appwrite';
@@ -120,10 +121,7 @@ export default function AddGoalScreen() {
   };
 
   return (
-    <KeyboardAvoidingView 
-      className="flex-1 bg-dark-900"
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
+    <>
       {/* Header */}
       <LinearGradient
         colors={['#6366F1', '#8B5CF6']}
@@ -142,7 +140,13 @@ export default function AddGoalScreen() {
         </View>
       </LinearGradient>
 
-      <ScrollView className="flex-1 px-5 pt-6" showsVerticalScrollIndicator={false}>
+      <KeyboardAwareScrollView
+        className="flex-1 px-5 pt-6 bg-dark-900"
+        showsVerticalScrollIndicator={false}
+        enableOnAndroid={true}
+        extraScrollHeight={100}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Error Message */}
         {errorMessage && (
           <View className="bg-red-500/20 border border-red-500 rounded-xl px-4 py-3 mb-4">
@@ -356,7 +360,7 @@ export default function AddGoalScreen() {
             <Text className="text-white text-lg font-inter-semibold ml-2">Create Goal</Text>
           </LinearGradient>
         </TouchableOpacity>
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
       {/* Success Modal */}
       <Modal
@@ -380,6 +384,6 @@ export default function AddGoalScreen() {
           </View>
         </View>
       </Modal>
-    </KeyboardAvoidingView>
+    </>
   );
 }
