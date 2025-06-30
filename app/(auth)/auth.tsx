@@ -79,11 +79,19 @@ export default function Auth() {
         <TouchableOpacity className='bg-blue-600 px-6 py-2 rounded mb-4 w-64 items-center' onPress={handleAuth}>
           <Text className='text-white font-bold'>{isSignUp ? 'Sign Up' : 'Sign In'}</Text>
         </TouchableOpacity>
-        {!isSignUp && (
-          <TouchableOpacity onPress={() => setIsSignUp(true)}>
-            <Text className='text-blue-300'>Don&apos;t have an account? <Text className='underline'>Sign up</Text></Text>
-          </TouchableOpacity>
-        )}
+    {!isSignUp && (
+  <>
+    <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')}>
+      <Text className='text-blue-400 underline mb-4'>Forgot Password?</Text>
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => setIsSignUp(true)}>
+      <Text className='text-blue-300'>
+        Don’t have an account? <Text className='underline'>Sign up</Text>
+      </Text>
+    </TouchableOpacity>
+  </>
+)}
+
         {isSignUp && (
           <TouchableOpacity onPress={() => setIsSignUp(false)}>
             <Text className='text-blue-300'>Already have an account? <Text className='underline'>Sign in</Text></Text>

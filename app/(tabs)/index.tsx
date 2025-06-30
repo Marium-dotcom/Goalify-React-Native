@@ -40,7 +40,7 @@ type Goal = {
 };
 
 export default function HomeScreen() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [goals, setGoals] = useState<Goal[] | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -118,6 +118,15 @@ const getGradientColors = (progress: number): [string, string] => {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
+        {user && (
+  <TouchableOpacity
+    className="bg-red-600 px-6 py-2 rounded mt-4 w-64 items-center"
+    onPress={() => signOut()}
+  >
+    <Text className="text-white font-bold">Sign Out</Text>
+  </TouchableOpacity>
+)}
+
         <View className="items-center">
           <View className="bg-white/20 rounded-full p-3 mb-4">
             <Target size={32} color="#FFFFFF" strokeWidth={2} />

@@ -26,6 +26,7 @@ import {
   Sparkles,
   EditIcon,
 } from 'lucide-react-native';
+import { useAuth } from '@/lib/auth-context';
 
 const DB_ID = '6860a0d100098a25345c';
 const COLLECTION_ID = '6860a0f0002e2a54c8f1';
@@ -52,7 +53,8 @@ export default function GoalDetailsScreen() {
   const router = useRouter();
   const [goal, setGoal] = useState<Goal | null>(null);
   const [incrementValue, setIncrementValue] = useState<number>(0);
-
+  const {signOut} = useAuth();
+  
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

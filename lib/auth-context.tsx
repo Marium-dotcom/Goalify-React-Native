@@ -5,14 +5,13 @@ import { account } from "./appwrite";
 
 
 type AuthContextType = {
-  // Define the types for your authentication context here      
   user: Models.User<Models.Preferences> | null;
-    signIn: (email: string, password: string) => Promise<string | null>;
-    signUp: (email: string, password: string) => Promise<string | null>;
-    signOut: () => Promise<void>;
-    isLoading: boolean;
-}
-
+  signIn: (email: string, password: string) => Promise<string | null>;
+  signUp: (email: string, password: string) => Promise<string | null>;
+  signOut: () => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>; // ✅ Added this
+  isLoading: boolean;
+};
 
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -88,11 +87,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setIsLoading(false);
   };
+const forgotPassword = async (email: string) => {
+  await account.createRecovery(email, 'http://t0ronko-anonymous-8081.exp.direct/reset-password');
+};
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signUp, signOut, isLoading }}>
-      {children}
-    </AuthContext.Provider>
+<AuthContext.Provider value={{ user, signIn, signUp, signOut, forgotPassword, isLoading }}>
+  {children}
+</AuthContext.Provider>
   );
 }
 

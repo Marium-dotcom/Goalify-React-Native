@@ -1,3 +1,4 @@
+// app/_layout.tsx
 import './globals.css'
 import { AuthProvider, useAuth } from '@/lib/auth-context';
 import { Stack, useRouter, useSegments } from 'expo-router';
@@ -11,10 +12,10 @@ function RouteGuard({ children }: { children: React.ReactNode }) {
   const isReady = segments.length > 0; // مهم جداً
 
   useEffect(() => {      
-    const isAuthRoute = segments[0] === 'auth'
+const isAuthRoute = segments[0] === '(auth)'
 
       if (!isAuthRoute && !user && !isLoading ) {
-      router.replace('/auth')
+      router.replace('/(auth)/auth')
     } else if (isAuthRoute && user && !isLoading) {
       router.replace('/')
     }
@@ -33,6 +34,12 @@ export default function RootLayout() {
       
           <Stack.Screen
             name="(tabs)"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="(auth)"
             options={{
               headerShown: false,
             }}
