@@ -24,6 +24,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Query } from 'react-native-appwrite';
+import { Feather } from '@expo/vector-icons';
 
 const DB_ID = '6860a0d100098a25345c';
 const COLLECTION_ID = '6860a0f0002e2a54c8f1';
@@ -100,15 +101,17 @@ useFocusEffect(
   if (!goals || goals.length === 0) {
     return (
       <View className="flex-1 bg-dark-900 justify-center items-center px-6">
-         <View className="flex-row justify-end px-4 mt-4">
-  <TouchableOpacity
-    className="bg-red-600 px-4 py-2 rounded"
-    onPress={signOut}
-  >
-    <Text className="text-white font-semibold">Sign Out</Text>
-  </TouchableOpacity>
-</View>
-        <Text className="text-gray-400 text-lg text-center">
+        <View className="flex-row justify-end w-full px-4 mt-4">
+          <TouchableOpacity
+            className="p-2 rounded-full bg-red-600/10"
+            onPress={signOut}
+            accessibilityLabel="Sign Out"
+            accessibilityRole="button"
+          >
+            <Feather name="log-out" size={24} color="#EF4444" />
+          </TouchableOpacity>
+        </View>
+        <Text className="text-gray-400 text-lg text-center mt-8">
           No goals yet. Tap “Create” to add your first one!
         </Text>
       </View>
@@ -130,8 +133,16 @@ const getGradientColors = (progress: number): [string, string] => {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-
-
+        <View className="flex-row justify-end w-full">
+          <TouchableOpacity
+            className="p-2 rounded-full bg-red-600/10"
+            onPress={signOut}
+            accessibilityLabel="Sign Out"
+            accessibilityRole="button"
+          >
+            <Feather name="log-out" size={24} color="#EF4444" />
+          </TouchableOpacity>
+        </View>
         <View className="items-center">
           <View className="bg-white/20 rounded-full p-3 mb-4">
             <Target size={32} color="#FFFFFF" strokeWidth={2} />

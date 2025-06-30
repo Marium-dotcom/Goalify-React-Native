@@ -11,9 +11,9 @@ export default function TabLayout() {
           headerShown: false,
           tabBarActiveTintColor: '#FFD600',
           tabBarInactiveTintColor: '#444B5A',
-          tabBarStyle: { backgroundColor: '#181A20', borderTopWidth: 0, height: 64 },
+          tabBarStyle: { backgroundColor: 'black', borderTopWidth: 0, height: 66, paddingBottom: 1 },
           tabBarIcon: ({ color, size, focused }) => {
-            const iconSize = size - 4;
+            const iconSize = size - 5;
             if (route.name === 'index') {
               return (
                 <View className={`items-center justify-center ${focused ? 'bg-yellow-500/10' : ''} rounded-xl p-1`}>
@@ -55,7 +55,7 @@ export default function TabLayout() {
             if (route.name === 'streaks') label = 'Streak';
             if (route.name === 'addGoal') label = 'Goal';
             return (
-              <Text className={`font-bold text-xs ${focused ? 'text-yellow-400' : 'text-gray-400'}`}>{label}</Text>
+              <Text className={`font-bold text-xs my-1 ${focused ? 'text-yellow-400' : 'text-gray-400'}`}>{label}</Text>
             );
           },
         })}
