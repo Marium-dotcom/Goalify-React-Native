@@ -41,17 +41,20 @@ export default function EditGoalScreen() {
   const router = useRouter();
   const { user } = useAuth();
 
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [goalTitle, setGoalTitle] = useState('');
-  const [goalDescription, setGoalDescription] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedFrequency, setSelectedFrequency] = useState('daily');
-  const [selectedPriority, setSelectedPriority] = useState('medium');
-  const [targetValue, setTargetValue] = useState('');
-  const [reward, setReward] = useState('');
-  const [motivationalQuote, setMotivationalQuote] = useState('');
-  const [errorMessage, setErrorMessage] = useState<string|null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [saving, setSaving] = useState<boolean>(false);
+
+  const [goalTitle, setGoalTitle] = useState<string>('');
+  const [goalDescription, setGoalDescription] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedFrequency, setSelectedFrequency] = useState<string>('daily');
+  const [selectedPriority, setSelectedPriority] = useState<string>('medium');
+  const [targetValue, setTargetValue] = useState<number>(0);
+  const [reward, setReward] = useState<string>('');
+  const [motivationalQuote, setMotivationalQuote] = useState<string>('');
+  const [unit, setUnit] = useState<string>('');
+  const [customUnit, setCustomUnit] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const categories: Category[] = [
     { id: 'health', label: 'Health', icon: Heart, color: '#10B981', bgColor: 'bg-emerald-500' },
@@ -86,6 +89,9 @@ export default function EditGoalScreen() {
         setTargetValue(doc.targetValue);
         setReward(doc.reward || '');
         setMotivationalQuote(doc.motivationalQuote || '');
+        setUnit(doc.unit || '');
+        setCustomUnit(doc.customUnit || '');
+
       } catch (err:any) {
         console.error(err);
         setErrorMessage('Failed to load goal.');
@@ -100,21 +106,24 @@ export default function EditGoalScreen() {
     if (!goalTitle.trim() || !selectedCategory) return;
     setSaving(true);
     try {
-      await databases.updateDocument(
-        DB_ID,
-        COLLECTION_ID,
-        id!,
-        {
-          title: goalTitle,
-          description: goalDescription,
-          category: selectedCategory,
-          frequency: selectedFrequency,
-          priority: selectedPriority,
-          targetValue,
-          reward,
-          motivationalQuote,
-        }
-      );
+    await databases.updateDocument(
+  DB_ID,
+  COLLECTION_ID,
+  id!,
+  {
+    title: goalTitle,
+    description: goalDescription,
+    category: selectedCategory,
+    frequency: selectedFrequency,
+    priority: selectedPriority,
+    targetValue,
+    reward,
+    motivationalQuote,
+    unit,
+    customUnit,
+  }
+);
+
       router.push('/');
     } catch (err:any) {
       console.error(err);
@@ -198,23 +207,22 @@ export default function EditGoalScreen() {
               const Icon = cat.icon;
               const sel = selectedCategory === cat.id;
               return (
-                <TouchableOpacity
-                  key={cat.id}
-                  onPress={() => setSelectedCategory(cat.id)}
-                  className={`w-[48%] rounded-xl p-3 mb-3 ${
-                    sel ? `${cat.bgColor} border-indigo-500` : 'bg-dark-800 border-dark-700'
-                  }`}
-                  activeOpacity={0.7}
-                >
-                  <View className={`rounded-full p-3 mb-2 ${sel?cat.bgColor:'bg-dark-700'}`}>
-                    <Icon size={24} color={sel?'#FFF':cat.color} strokeWidth={2}/>
-                  </View>
-                  <Text className={`text-center ${
-                    sel?'text-white':'text-gray-400'
-                  }`}>
-                    {cat.label}
-                  </Text>
-                </TouchableOpacity>
+   <TouchableOpacity
+  key={cat.id}
+  onPress={() => setSelectedCategory(cat.id)}
+  className={`w-[48%] rounded-xl p-3 mb-3 items-center ${
+    sel ? `${cat.bgColor} border-indigo-500` : 'bg-dark-800 border-dark-700'
+  }`}
+  activeOpacity={0.7}
+>
+  <View className={`rounded-full p-3 mb-2 ${sel ? cat.bgColor : 'bg-dark-700'}`}>
+    <Icon size={24} color={sel ? '#FFF' : cat.color} strokeWidth={2} />
+  </View>
+  <Text className={`text-center ${sel ? 'text-white' : 'text-gray-400'}`}>
+    {cat.label}
+  </Text>
+</TouchableOpacity>
+
               );
             })}
           </View>
@@ -270,17 +278,51 @@ export default function EditGoalScreen() {
           </View>
         </View>
 
-        {/* Target Value */}
-        <View className="mb-6">
-          <Text className="text-white text-lg mb-2">Target / Measurement</Text>
-          <TextInput
-            className="bg-dark-800 border border-dark-700 rounded-xl px-4 py-3 text-white"
-            value={targetValue}
-            onChangeText={setTargetValue}
-            placeholder="e.g. 10,000 steps, $500"
-            placeholderTextColor="#64748B"
-          />
-        </View>
+      {/* Target Value */}
+<View className="mb-6">
+  <Text className="text-white text-lg mb-2">Target Value</Text>
+  <TextInput
+    className="bg-dark-800 border border-dark-700 rounded-xl px-4 py-4 text-white text-base font-inter mb-3"
+    value={targetValue ? String(targetValue) : ''}
+    onChangeText={text => setTargetValue(Number(text))}
+    keyboardType="numeric"
+    placeholder="Enter the number e.g. 10000"
+    placeholderTextColor="#64748B"
+  />
+
+  <Text className="text-white text-lg font-inter-semibold mb-2 mt-4">Unit</Text>
+  <View className="bg-dark-800 border border-dark-700 rounded-xl mb-3">
+    {['steps', 'USD', 'minutes', 'km', 'sessions', 'custom'].map((unitOption) => (
+      <TouchableOpacity
+        key={unitOption}
+        className={`px-4 py-3 ${
+          unit === unitOption ? 'bg-indigo-500/20 border-l-4 border-indigo-500' : ''
+        }`}
+        onPress={() => {
+          setUnit(unitOption);
+          if (unitOption !== 'custom') setCustomUnit('');
+        }}
+      >
+        <Text className={`text-base font-inter ${
+          unit === unitOption ? 'text-indigo-400' : 'text-gray-400'
+        }`}>
+          {unitOption === 'custom' ? 'Custom Unit' : unitOption}
+        </Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+
+  {unit === 'custom' && (
+    <TextInput
+      className="bg-dark-800 border border-dark-700 rounded-xl px-4 py-4 text-white text-base font-inter"
+      value={customUnit}
+      onChangeText={setCustomUnit}
+      placeholder="Enter your custom unit (e.g. pages, reps)"
+      placeholderTextColor="#64748B"
+    />
+  )}
+</View>
+
 
         {/* Reward */}
         <View className="mb-6">
