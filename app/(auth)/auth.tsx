@@ -11,7 +11,8 @@ export default function Auth() {
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
   const {signIn , signUp, user} =  useAuth()
-  
+  const name = `${firstName.trim()} ${lastName.trim()}`;
+
   const handleError = (message: string) => {
     setError(message)
     setTimeout(() => setError(null), 3000)
@@ -29,7 +30,7 @@ export default function Auth() {
     }
     try {
       if (isSignUp) {
-        await signUp(email, password)
+        await signUp(email, password, name)
       } else {
         await signIn(email, password)
         router.push('/') // Nav

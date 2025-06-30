@@ -7,7 +7,7 @@ import { account } from "./appwrite";
 type AuthContextType = {
   user: Models.User<Models.Preferences> | null;
   signIn: (email: string, password: string) => Promise<string | null>;
-  signUp: (email: string, password: string) => Promise<string | null>;
+  signUp: (email: string, password: string, name: string) => Promise<string | null>;
   signOut: () => Promise<void>;
   forgotPassword: (email: string) => Promise<void>; // ✅ Added this
   isLoading: boolean;
@@ -62,11 +62,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, name: string) => {
 
     try {
       setIsLoading(true);
-      await account.create(ID.unique(), email, password);
+      await account.create(ID.unique(), email, password, name);
       await signIn(email, password);
       setIsLoading(false);
       return null
