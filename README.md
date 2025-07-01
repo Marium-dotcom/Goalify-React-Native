@@ -90,7 +90,13 @@ Inspired by apps like **Duolingo** and **Habitica**, with a focus on clean UX an
 
 ## 🖼 GitHub Thumbnail
 
-> (Add a nice thumbnail: size 1280 × 640)
+# Goal Tracker App 📱
+
+<p align="center">
+  <img src="./assets/thumbnail.png" alt="App Thumbnail" width="600"/>
+</p>
+
+A goal-tracking mobile application built with React Native + Appwrite 💪
 
 ---
 
