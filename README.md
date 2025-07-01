@@ -1,56 +1,99 @@
-# 🚀 Your Project Name
+# 🎯 Goal Tracker App
 
-A React Native mobile app built with **NativeWind**, **Appwrite**, and **React Native**, featuring full **authentication & authorization**.
-
----
-
-## 📖 Table of Contents
-
-1. [About](#about)  
-2. [Features](#features)  
-3. [Tech Stack](#tech-stack)  
-4. [Prerequisites](#prerequisites)  
-5. [Installation](#installation)  
-6. [Configuration](#configuration)  
-7. [Running the App](#running-the-app)  
-8. [Authentication & Authorization](#authentication--authorization)  
-9. [Folder Structure](#folder-structure)  
-10. [Contributing](#contributing)  
-11. [License](#license)  
-12. [Contact](#contact)  
+A sleek and modern goal tracking mobile app to help users set, manage, and achieve personal goals — complete with streak tracking, progress visualization, and motivational insights.
 
 ---
 
-## 🧐 About
+## 🚀 Features
 
-This project is a cross-platform React Native application styled with **NativeWind** and backed by **Appwrite** for your backend needs. It demonstrates a complete login/signup flow, protected routes/screens, and role-based authorization.
-
----
-
-## ✨ Features
-
-- 🔐 Email & password authentication (signup, login, logout)  
-- 🎟️ Protected screens/routes (only authenticated users can access)  
-- 👥 Role-based authorization (e.g. “user” vs. “admin” roles)  
-- 📱 Responsive UI powered by NativeWind (Tailwind-style in React Native)  
-- ☁️ Appwrite integration for database, storage, functions, and user management  
-- ⚡ Fast development with Expo (optional)  
+- ✅ Create and customize personal goals  
+- 📊 Track progress with visual analytics  
+- 🔥 Daily streak tracking to build consistency  
+- 🧠 Motivational quotes and reward system  
+- 🗂 Categories for goal types (Health, Learning, Career, etc.)  
+- 💡 Insightful stats: Completion rate, streaks, daily average  
+- 🌓 Dark mode friendly UI (NativeWind + Tailwind syntax)
 
 ---
 
-## 🛠️ Tech Stack
+## 📸 Screenshots
 
-- **Frontend**  
-  - [React Native](https://reactnative.dev/)  
-  - [NativeWind](https://www.nativewind.dev/) (Tailwind-style styling)  
-  - [Expo](https://expo.dev/) or plain React Native CLI  
-
-- **Backend / BaaS**  
-  - [Appwrite](https://appwrite.io/) – authentication, database, storage, functions  
-
-- **State Management / Navigation**  
-  - React Context / Hooks  
-  - [React Navigation](https://reactnavigation.org/)  
+> Add screenshots or a GIF here if available
 
 ---
 
+## 🛠 Built With
+
+- **React Native (Expo)**
+- **Appwrite** – Authentication & database
+- **NativeWind** – TailwindCSS for React Native
+- **Lucide-react-native** – Icon set
+- **Expo Router** – Navigation & routing
+
+---
+
+## ⚙️ Getting Started
+
+```bash
+git clone https://github.com/your-username/goal-tracker-app.git
+cd goal-tracker-app
+yarn install
+npx expo start
+```
+
+> Make sure you configure your `.env` or Appwrite SDK with your project credentials.
+
+---
+
+## 📦 Folder Structure
+
+```
+├── app/                 # Screens & Routes (expo-router)
+├── components/          # Reusable UI components
+├── lib/                 # Appwrite services & auth context
+├── assets/              # Icons & images
+└── styles/              # Global Tailwind + fonts
+```
+
+---
+
+## 🔒 Authentication
+
+This app uses Appwrite's OAuth (Google) and Email/Password login.  
+Custom fields like `firstName`, `lastName`, and profile picture are supported via user preferences.
+
+---
+
+## 📈 Analytics Screen
+
+Includes:
+- Weekly bar chart
+- Category progress breakdown
+- Key insights (streaks, success rate)
+- Responsive design with gradient cards
+
+---
+
+## 💡 Future Ideas
+
+- Community feed (like "For You" page) – *optional*
+- Push notifications
+- Gamification badges
+
+---
+
+## 🧠 Inspiration
+
+Inspired by apps like **Duolingo** and **Habitica**, with a focus on clean UX and behavioral psychology.
+
+---
+
+## 🖼 GitHub Thumbnail
+
+> (Add a nice thumbnail: size 1280 × 640)
+
+---
+
+## 📬 Contact
+
+Made with ❤️ by [Your Name](https://github.com/your-username)
