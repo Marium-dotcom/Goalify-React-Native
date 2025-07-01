@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useAuth } from '@/lib/auth-context';
 import { databases } from '@/lib/appwrite';
+
 import * as Progress from 'react-native-progress';
 import {
   Heart,
@@ -44,9 +45,26 @@ type Goal = {
 export default function HomeScreen() {
   const { user, signOut } = useAuth();
   const [goals, setGoals] = useState<Goal[] | null>(null);
+  const [filter, setFilter] = useState<'all' | 'ongoing' | 'completed'>('all');
+
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  
+
+const filteredGoals = goals?.filter(goal => {
+  if (filter === 'completed') return goal.currentValue >= goal.targetValue;
+  if (filter === 'ongoing') return goal.currentValue < goal.targetValue;
+  return true;
+});
+
+  const totalGoals = filteredGoals?.length || 0;
+  const completedGoals = filteredGoals?.filter(g => g.currentValue >= g.targetValue).length || 0;
+  const ongoingGoals = totalGoals - completedGoals;
+
+  const progressPercentage = totalGoals > 0 ? (completedGoals / totalGoals) * 100 : 0;
+
+
+
+  // Fetch goals when the screen is focused
 
 useFocusEffect(
   useCallback(() => {
@@ -163,10 +181,26 @@ const getGradientColors = (progress: number): [string, string] => {
           Here&apos;s your progress so far:
         </Text>
       </View>
+      <View className="flex-row justify-around px-5 mt-6 mb-4">
+  {(['all', 'ongoing', 'completed'] as const).map(type => (
+    <TouchableOpacity
+      key={type}
+      className={`px-4 py-2 rounded-full ${
+        filter === type ? 'bg-indigo-600' : 'bg-dark-700'
+      }`}
+      onPress={() => setFilter(type)}
+    >
+      <Text className={`text-sm ${filter === type ? 'text-white' : 'text-gray-400'}`}>
+        {type === 'all' ? 'All Goals' : type.charAt(0).toUpperCase() + type.slice(1)}
+      </Text>
+    </TouchableOpacity>
+  ))}
+</View>
+
 
       {/* Goals List */}
       <FlatList
-        data={goals}
+        data={filteredGoals}
         keyExtractor={(g) => g.$id}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
         ItemSeparatorComponent={() => <View className="h-4" />}

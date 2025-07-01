@@ -40,20 +40,9 @@ export default function RootLayout() {
       <AuthProvider>
         <RouteGuard>
           <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom', 'left', 'right']}>
-            <Stack>
-      
-              <Stack.Screen
-                name="(tabs)"
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="(auth)"
-                options={{
-                  headerShown: false,
-                }}
-              />
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="(auth)" />
             </Stack>
           </SafeAreaView>
         </RouteGuard>
