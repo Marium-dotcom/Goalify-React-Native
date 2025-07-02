@@ -1,69 +1,105 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Award, BarChart3, CheckCircle, Clock, Flame, Target, TrendingUp } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { FlatList } from 'react-native-reanimated/lib/typescript/Animated';
+import { useAuth } from '@/lib/auth-context';
+import { databases } from '@/lib/appwrite';
+import { Query } from 'react-native-appwrite';
+
+const DB_ID = '6860a0d100098a25345c';
+const COLLECTION_ID = '6860a0f0002e2a54c8f1';
 
 export default function AnalyticsScreen() {
-  const [selectedPeriod, setSelectedPeriod] = useState('week');
+  const { user } = useAuth();
+  const [selectedPeriod, setSelectedPeriod] = useState<string>('week');
+  const [goals, setGoals] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch goals from Appwrite
+  useEffect(() => {
+    if (!user) return;
+    const fetchGoals = async () => {
+      setLoading(true);
+      try {
+        const res = await databases.listDocuments(DB_ID, COLLECTION_ID, [
+          Query.equal('userId', user.$id)
+        ]);
+        setGoals(res.documents);
+      } catch (err) {
+        console.error('Failed to fetch goals:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGoals();
+  }, [user]);
+
+  // Calculate stats from real data
+  const totalGoals = goals.length;
+  const completedGoals = goals.filter(g => Number(g.currentValue) >= Number(g.targetValue)).length;
+  const completionRate = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
+
+
+  // Weekly data (for the current week)
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay() + 1); // Monday
+
+  // Category progress
+  const categoryMap: Record<string, { completed: number; total: number; color: string }> = {};
+  goals.forEach(g => {
+    const cat = g.category || 'Other';
+    if (!categoryMap[cat]) categoryMap[cat] = { completed: 0, total: 0, color: '#6366F1' };
+    categoryMap[cat].total += 1;
+    if (Number(g.currentValue) >= Number(g.targetValue)) categoryMap[cat].completed += 1;
+    // Optionally, set color based on category
+    if (cat === 'Health') categoryMap[cat].color = '#10B981';
+    if (cat === 'Learning') categoryMap[cat].color = '#3B82F6';
+    if (cat === 'Financial') categoryMap[cat].color = '#F59E0B';
+    if (cat === 'Personal') categoryMap[cat].color = '#EF4444';
+  });
+  const categoryProgress = Object.entries(categoryMap).map(([name, v]) => ({
+    name,
+    completed: v.completed,
+    total: v.total,
+    color: v.color,
+  }));
+
+  const stats = {
+    totalGoals,
+    completedGoals,
+    completionRate,
+    averageDaily: 0, // You can compute this if you store daily completion data
+  };
+
+
+  // Define periods for the period selector
   const periods = [
     { id: 'week', label: 'Week' },
     { id: 'month', label: 'Month' },
     { id: 'year', label: 'Year' },
   ];
 
-  const weeklyData = [
-    { day: 'Mon', completed: 3, total: 4 },
-    { day: 'Tue', completed: 4, total: 4 },
-    { day: 'Wed', completed: 2, total: 4 },
-    { day: 'Thu', completed: 4, total: 4 },
-    { day: 'Fri', completed: 3, total: 4 },
-    { day: 'Sat', completed: 1, total: 4 },
-    { day: 'Sun', completed: 2, total: 4 },
-  ];
-
-  const stats = {
-    totalGoals: 12,
-    completedGoals: 8,
-    currentStreak: 15,
-    longestStreak: 23,
-    completionRate: 67,
-    averageDaily: 2.3,
-  };
-
-  const categoryProgress = [
-    { name: 'Health', completed: 12, total: 15, color: '#10B981' },
-    { name: 'Learning', completed: 8, total: 12, color: '#3B82F6' },
-    { name: 'Financial', completed: 5, total: 6, color: '#F59E0B' },
-    { name: 'Personal', completed: 3, total: 8, color: '#EF4444' },
-  ];
-
-  const getMaxValue = () => {
-    return Math.max(...weeklyData.map(d => d.total));
-  };
-
   return (
     <>
-<LinearGradient
-  colors={['#10B981', '#059669']}
-  className="pt-16 pb-10 px-6"
-  start={{ x: 0, y: 0 }}
-  end={{ x: 1, y: 1 }}
->
-  <View className="items-center space-y-3">
-    <View className="bg-white/20 p-4 rounded-2xl">
-      <Target size={28} color="#FFFFFF" strokeWidth={2} />
-    </View>
-    <Text className="text-white text-3xl font-poppins-bold tracking-wide">
-      Your Journey, Visualized
-    </Text>
-    <Text className="text-slate-100 text-center text-base font-inter leading-relaxed max-w-md">
-      Dive into your progress stats, track your streaks, and celebrate every win—big or small.
-    </Text>
-  </View>
-</LinearGradient>
+      <LinearGradient
+        colors={['#10B981', '#059669']}
+        className="pt-16 pb-10 px-6"
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <View className="items-center space-y-3">
+          <View className="bg-white/20 p-4 rounded-2xl">
+            <Target size={28} color="#FFFFFF" strokeWidth={2} />
+          </View>
+          <Text className="text-white text-3xl font-poppins-bold tracking-wide">
+            Your Journey, Visualized
+          </Text>
+          <Text className="text-slate-100 text-center text-base font-inter leading-relaxed max-w-md">
+            Dive into your progress stats, track your streaks, and celebrate every win—big or small.
+          </Text>
+        </View>
+      </LinearGradient>
 
       <ScrollView className="flex-1 bg-slate-900" contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
         <View className="flex-row justify-between items-center px-5 pt-16 pb-5">
@@ -114,18 +150,6 @@ export default function AnalyticsScreen() {
             <Text className="text-xs font-inter text-white/80 mt-1">Completed</Text>
           </LinearGradient>
 
-          <LinearGradient
-            colors={['#F59E0B', '#D97706']}
-            className="w-[48%] p-5 rounded-2xl items-center mb-3"
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Flame size={24} color="#FFFFFF" strokeWidth={2} />
-            <Text className="text-2xl font-poppins-bold text-white mt-2">
-              {stats.currentStreak}
-            </Text>
-            <Text className="text-xs font-inter text-white/80 mt-1">Day Streak</Text>
-          </LinearGradient>
 
           <LinearGradient
             colors={['#6366F1', '#4F46E5']}
@@ -158,36 +182,7 @@ export default function AnalyticsScreen() {
             Weekly Progress
           </Text>
 
-          <View className="flex-row justify-between items-end h-32">
-            {weeklyData.map((data, index) => {
-              const max = getMaxValue();
-              const totalHeight = (data.total / max) * 80;
-              const completedHeight = (data.completed / max) * 80;
-
-              return (
-                <View key={index} className="items-center flex-1">
-                  <View className="relative w-5 justify-end">
-                    {/* Total Bar */}
-                    <View
-                      className="absolute bottom-0 w-full bg-dark-600 rounded-sm"
-                      style={{ height: totalHeight }}
-                    />
-                    {/* Completed Bar */}
-                    <View
-                      className="absolute bottom-0 w-full bg-indigo-500 rounded-sm"
-                      style={{ height: completedHeight }}
-                    />
-                  </View>
-                  <Text className="text-xs font-inter-medium text-slate-400 mt-2">
-                    {data.day}
-                  </Text>
-                  <Text className="text-[10px] font-inter text-slate-500 mt-1">
-                    {data.completed}/{data.total}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
+       
         </View>
         <View className="bg-dark-800 rounded-2xl p-5 mb-6 border border-dark-700">
           <Text className="text-lg font-poppins-semibold text-white mb-4">
@@ -227,12 +222,7 @@ export default function AnalyticsScreen() {
             Key Insights
           </Text>
 
-          <View className="flex-row items-center mb-3">
-            <Award size={20} color="#10B981" strokeWidth={2} />
-            <Text className="ml-3 text-sm font-inter text-slate-300 flex-1">
-              You&apos;re on a {stats.currentStreak}-day streak! Keep it up!
-            </Text>
-          </View>
+     
 
           <View className="flex-row items-center mb-3">
             <TrendingUp size={20} color="#3B82F6" strokeWidth={2} />

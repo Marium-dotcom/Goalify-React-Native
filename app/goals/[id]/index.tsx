@@ -10,6 +10,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   TextInput,
+  Alert,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { databases } from '@/lib/appwrite';
@@ -25,6 +26,7 @@ import {
   Users,
   Sparkles,
   EditIcon,
+  Trash2 as DeleteIcon, // <-- add delete icon
 } from 'lucide-react-native';
 import { useAuth } from '@/lib/auth-context';
 
@@ -53,8 +55,8 @@ export default function GoalDetailsScreen() {
   const router = useRouter();
   const [goal, setGoal] = useState<Goal | null>(null);
   const [incrementValue, setIncrementValue] = useState<number>(0);
-  const {signOut} = useAuth();
-  
+  const { signOut } = useAuth();
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -85,25 +87,33 @@ export default function GoalDetailsScreen() {
     })();
   }, [id]);
 
-const handleUpdateProgress = async () => {
-  if (!goal || incrementValue <= 0) return;
+  const handleUpdateProgress = async () => {
+    if (!goal || incrementValue <= 0) return;
 
-  const updatedValue = goal.currentValue + incrementValue;
+    const updatedValue = goal.currentValue + incrementValue;
 
-  try {
-    await databases.updateDocument(DB_ID, COLLECTION_ID, goal.$id, {
-      currentValue: updatedValue,
-    });
+    try {
+      await databases.updateDocument(DB_ID, COLLECTION_ID, goal.$id, {
+        currentValue: updatedValue,
+      });
 
-    setGoal({ ...goal, currentValue: updatedValue });
-    setIncrementValue(0);
-    router.back()
-  } catch (err) {
-    console.error('Failed to update progress', err);
-  }
-};
+      setGoal({ ...goal, currentValue: updatedValue });
+      setIncrementValue(0);
+      router.back();
+    } catch (err) {
+      console.error('Failed to update progress', err);
+    }
+  };
 
-
+  const handleDeleteGoal = async () => {
+    if (!goal) return;
+    try {
+      await databases.deleteDocument(DB_ID, COLLECTION_ID, goal.$id);
+      router.back();
+    } catch (err) {
+      Alert.alert('Error', 'Failed to delete goal.');
+    }
+  };
 
   if (loading) {
     return (
@@ -138,7 +148,7 @@ const handleUpdateProgress = async () => {
 
   const targetNum = goal.targetValue || 1;
   const doneCount = (goal.completedDates || []).length;
-const progress = Math.min(goal.currentValue / goal.targetValue, 1);
+  const progress = Math.min(goal.currentValue / goal.targetValue, 1);
 
   return (
     <KeyboardAvoidingView
@@ -165,6 +175,21 @@ const progress = Math.min(goal.currentValue / goal.targetValue, 1);
           className="p-2 ml-2"
         >
           <EditIcon size={22} color="#FFF" strokeWidth={2} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            Alert.alert(
+              'Delete Goal',
+              'Are you sure you want to delete this goal? This action cannot be undone.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Delete', style: 'destructive', onPress: handleDeleteGoal },
+              ]
+            );
+          }}
+          className="p-2 ml-2"
+        >
+          <DeleteIcon size={22} color="#F87171" strokeWidth={2} />
         </TouchableOpacity>
       </LinearGradient>
 
@@ -194,27 +219,26 @@ const progress = Math.min(goal.currentValue / goal.targetValue, 1);
           )}
         </View>
         {/* Update Progress */}
-<View className="mb-8">
-  <Text className="text-white text-base font-inter-semibold mb-2">
-    Add to progress
-  </Text>
-  <View className="flex-row items-center space-x-2">
-    <TextInput
-      className="flex-1 bg-dark-800 border border-dark-700 rounded-xl px-4 py-3 text-white text-base font-inter"
-      placeholder={`e.g., 30 ${goal.unit || ''}`}
-      placeholderTextColor="#64748B"
-      keyboardType="numeric"
-      onChangeText={(text) => setIncrementValue(Number(text))}
-    />
-    <TouchableOpacity
-      className="bg-indigo-600 rounded-xl px-4 py-3"
-      onPress={handleUpdateProgress}
-    >
-      <Text className="text-white font-inter">Update</Text>
-    </TouchableOpacity>
-  </View>
-</View>
-
+        <View className="mb-8">
+          <Text className="text-white text-base font-inter-semibold mb-2">
+            Add to progress
+          </Text>
+          <View className="flex-row items-center space-x-2">
+            <TextInput
+              className=" w-80 bg-dark-800 border border-dark-700 rounded-xl px-4 py-3 text-white text-base font-inter"
+              placeholder={`e.g., 30 ${goal.unit || ''}`}
+              placeholderTextColor="#64748B"
+              keyboardType="numeric"
+              onChangeText={(text) => setIncrementValue(Number(text))}
+            />
+            <TouchableOpacity
+              className="bg-indigo-600 rounded-xl px-4 py-3 ml-5"
+              onPress={handleUpdateProgress}
+            >
+              <Text className="text-white font-inter">Update</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
 
         {/* Description */}
         {goal.description && (
@@ -244,9 +268,9 @@ const progress = Math.min(goal.currentValue / goal.targetValue, 1);
         {/* Progress */}
         <View className="mb-8">
           <Text className="text-gray-300 text-sm mb-2">
-<Text className="text-gray-300 text-sm mb-2">
-  Progress ({goal.currentValue} / {goal.targetValue} {goal.unit || ''})
-</Text>
+            <Text className="text-gray-300 text-sm mb-2">
+              Progress ({goal.currentValue} / {goal.targetValue} {goal.unit || ''})
+            </Text>
           </Text>
           <Progress.Bar
             progress={progress}
