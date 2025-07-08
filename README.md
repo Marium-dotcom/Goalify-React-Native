@@ -14,11 +14,6 @@ A sleek and modern goal tracking mobile app to help users set, manage, and achie
 - 💡 Insightful stats: Completion rate, streaks, daily average  
 - 🌓 Dark mode friendly UI (NativeWind + Tailwind syntax)
 
----
-
-## 📸 Screenshots
-
-> Add screenshots or a GIF here if available
 
 ---
 
@@ -102,4 +97,4 @@ A goal-tracking mobile application built with React Native + Appwrite 💪
 
 ## 📬 Contact
 
-Made with ❤️ by [Your Name](https://github.com/your-username)
+Made with ❤️ by [Your Name](https://github.com/Marium-dotcom)
