@@ -30,13 +30,13 @@ A sleek and modern goal tracking mobile app to help users set, manage, and achie
 ## ⚙️ Getting Started
 
 ```bash
-git clone https://github.com/your-username/goal-tracker-app.git
-cd goal-tracker-app
-yarn install
+git clone https://github.com/Marium-dotcom/Goal.git
+cd Goal
+yarn install or npm install
 npx expo start
 ```
 
-> Make sure you configure your `.env` or Appwrite SDK with your project credentials.
+  > You dont need to add appwrites keys, I already added mine within the project.
 
 ---
 
@@ -97,4 +97,4 @@ A goal-tracking mobile application built with React Native + Appwrite 💪
 
 ## 📬 Contact
 
-Made with ❤️ by [Your Name](https://github.com/Marium-dotcom)
+Made with ❤️ by [Marium](https://github.com/Marium-dotcom)
