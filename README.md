@@ -11,7 +11,7 @@ A sleek and modern goal tracking mobile app to help users set, manage, and achie
 - 🔥 Daily streak tracking to build consistency  
 - 🧠 Motivational quotes and reward system  
 - 🗂 Categories for goal types (Health, Learning, Career, etc.)  
-- 💡 Insightful stats: Completion rate, streaks, daily average  
+- 💡 Insightful stats: Completion rate, daily average  
 - 🌓 Dark mode friendly UI (NativeWind + Tailwind syntax)
 
 
@@ -62,7 +62,6 @@ Custom fields like `firstName`, `lastName`, and profile picture are supported vi
 ## 📈 Analytics Screen
 
 Includes:
-- Weekly bar chart
 - Category progress breakdown
 - Key insights (streaks, success rate)
 - Responsive design with gradient cards
