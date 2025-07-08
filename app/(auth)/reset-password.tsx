@@ -70,8 +70,7 @@ export default function ResetPassword() {
             />
 
             <TouchableOpacity
-              className="bg-indigo-600 px-6 py-4 rounded-xl w-full items-center"
-              onPress={handleReset}
+className='bg-blue-600 px-6 py-2 rounded mb-4 w-64 items-center'                   onPress={handleReset}
               activeOpacity={0.8}
             >
               <Text className="text-white font-bold">Reset Password</Text>
